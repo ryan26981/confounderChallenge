@@ -1,6 +1,6 @@
 ---
-title: "Confounder & Randomization Challenge"
-subtitle: "Recovering Lost Figures: Visualizing Confounders and Causal Inference"
+title: "Using Randomization & Stratification to Overcome A Common Cause Confounder"
+#subtitle: "Recovering Lost Figures: Visualizing Confounders and Causal Inference"
 format:
   html: default
 bibliography: references.bib
@@ -8,30 +8,6 @@ execute:
   echo: true
   eval: true
 ---
-
-:::: {.callout-important}
-## 📋 The Challenge: Recover the Lost Figures!
-
-A critical report on confounding and causal inference was being prepared when disaster struck—the figures were lost! The data files survived (`patients_data.csv` and `patients_data_randomized.csv`), and the narrative text is intact, but **all three key visualizations have disappeared**.
-
-Your mission: **Recover the lost figures** by reading the narrative carefully and creating compelling visualizations that match the story being told. The figures must be:
-
-- **Figure 1**: Post-surgical outcomes by patient (observational data)
-- **Figure 2**: Post-surgical outcomes for randomized patients  
-- **Figure 3**: Post-surgical outcomes by patient severity (stratification)
-
-Use the text descriptions, statistical results, and your understanding of visualization best practices to recreate these figures. Your figures should be professional, colorblind-friendly, and tell the story clearly.
-
-**Implementation requirement:** All three figures must be generated with **beautifully formatted, object-oriented matplotlib code** — i.e., create explicit `Figure` and `Axes` objects via `fig, ax = plt.subplots(...)` and call methods on `ax` (e.g., `ax.scatter`, `ax.axhline`, `ax.set_xlabel`, `ax.legend`). Do **not** use the stateful `plt.scatter` / `plt.title` / `plt.xlabel` pyplot API. Code should be clean, well-organized, and readable (logical grouping, consistent spacing, and meaningful variable names, for example, use `dreamy_color = '#4E79A7'` once at the top and reuse it, rather than pasting the hex code into every plotting call).
-
-**Grading:** Completing the three figures correctly will earn you 85% of the grade. To earn the final 15% (for a total of 100%), you must make it feel like a complete, professional report rather than a challenge assignment
-::::
-
-:::: {.callout-warning}
-## ⚠️ AI Partnership Required
-Use Cursor AI for speed, but ensure you understand and can explain your visualizations in your own words. The goal is to create figures that match the narrative and statistical insights described in the text.
-::::
-
 ## The Paradox: Who *Really* Is the Better Surgeon?
 
 ::: {.callout-tip title="A Tale of Two Surgeons" icon=false}
@@ -397,20 +373,72 @@ The key to handling a common cause confounder is to stratify by the common cause
 ```{python}
 #| label: fig-plot-outcomes-severity
 #| fig-cap: "Post-Surgical Symptom Score (lower is better) by Patient and Severity"
-#| echo: true
+#| echo: false
 
-# TODO: Recover Figure 3 - Outcomes by patient severity (stratification)
-# Load observational data (already loaded above)
-# Create scatter plot with:
-#   - X-axis: Initial Patient Severity
-#   - Y-axis: Post-Surgical Symptom Score
-#   - Same color/marker scheme as previous figures
-#   - Mean lines and annotations
-#   - Shaded region from -1 to 1 on x-axis (use ax.axvspan or similar)
-#   - Professional styling
+import matplotlib.pyplot as plt
+import pandas as pd
 
-# Hint: Use axvspan(-1, 1, alpha=0.15, color='gray', zorder=0) for the overlay
+patients_df = pd.read_csv("patients_data.csv")
 
+dreamy_color = "#4E79A7"
+duck_color = "#E15759"
+overlap_low = -1
+overlap_high = 1
+
+dreamy = patients_df["doctor_name"] == "Doc Dreamy"
+duck = patients_df["doctor_name"] == "Doc Duck"
+
+mean_dreamy = patients_df.loc[dreamy, "post_surgical_score"].mean()
+mean_duck = patients_df.loc[duck, "post_surgical_score"].mean()
+
+fig, ax = plt.subplots(figsize=(9, 5), layout="constrained")
+
+ax.axvspan(overlap_low, overlap_high, alpha=0.15, color="gray", zorder=0)
+
+ax.scatter(
+    patients_df.loc[dreamy, "severity"],
+    patients_df.loc[dreamy, "post_surgical_score"],
+    marker="o",
+    s=55,
+    facecolors=dreamy_color,
+    edgecolors="white",
+    linewidths=0.6,
+    label="Doc Dreamy",
+    zorder=3,
+)
+ax.scatter(
+    patients_df.loc[duck, "severity"],
+    patients_df.loc[duck, "post_surgical_score"],
+    marker="^",
+    s=65,
+    facecolors=duck_color,
+    edgecolors="white",
+    linewidths=0.6,
+    label="Doc Duck",
+    zorder=3,
+)
+
+ax.axhline(mean_dreamy, color=dreamy_color, linestyle="--", linewidth=1.5, alpha=0.9, zorder=2)
+ax.axhline(mean_duck, color=duck_color, linestyle="--", linewidth=1.5, alpha=0.9, zorder=2)
+
+ax.text(
+    0.99,
+    0.97,
+    f"Mean ○ Doc Dreamy: {mean_dreamy:.2f}\nMean △ Doc Duck: {mean_duck:.2f}",
+    transform=ax.transAxes,
+    ha="right",
+    va="top",
+    fontsize=10,
+    bbox=dict(boxstyle="round,pad=0.35", facecolor="white", edgecolor="0.75", alpha=0.95),
+)
+
+ax.set_xlabel("Initial Patient Severity", fontsize=11)
+ax.set_ylabel("Post-Surgical Symptom Score (Lower is Better)", fontsize=11)
+ax.set_title("Post-Surgical Symptom Score by Patient Severity", fontsize=12, pad=10)
+ax.grid(True, linestyle=":", linewidth=0.8, alpha=0.65)
+ax.legend(frameon=True, loc="lower right", fontsize=10)
+
+ax.tick_params(axis="both", labelsize=10)
 ```
 
 Looking at @fig-plot-outcomes-severity, the value of stratifying by severity is visually most obvious with initial patient severity scores between -1 and 1 (highlighted in the overlay). We chose this region because it shows substantial overlap between the two surgeons—both surgeons have considerable data within this range, making it an ideal region for comparing their performance. Outside of this range, there is less data available for making direct comparisons: Doc Duck sees more of the higher-severity patients (severity > 1), while Doc Dreamy sees more of the lower-severity patients (severity < -1).

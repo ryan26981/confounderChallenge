@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Confounder &amp; Randomization Challenge</title>
+<title>Using Randomization &amp; Stratification to Overcome A Common Cause Confounder</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -134,8 +134,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Confounder &amp; Randomization Challenge</h1>
-<p class="subtitle lead">Recovering Lost Figures: Visualizing Confounders and Causal Inference</p>
+<h1 class="title">Using Randomization &amp; Stratification to Overcome A Common Cause Confounder</h1>
 </div>
 
 
@@ -152,42 +151,6 @@ window.Quarto = {
 </header>
 
 
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>📋 The Challenge: Recover the Lost Figures!
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A critical report on confounding and causal inference was being prepared when disaster struck—the figures were lost! The data files survived (<code>patients_data.csv</code> and <code>patients_data_randomized.csv</code>), and the narrative text is intact, but <strong>all three key visualizations have disappeared</strong>.</p>
-<p>Your mission: <strong>Recover the lost figures</strong> by reading the narrative carefully and creating compelling visualizations that match the story being told. The figures must be:</p>
-<ul>
-<li><strong>Figure 1</strong>: Post-surgical outcomes by patient (observational data)</li>
-<li><strong>Figure 2</strong>: Post-surgical outcomes for randomized patients<br>
-</li>
-<li><strong>Figure 3</strong>: Post-surgical outcomes by patient severity (stratification)</li>
-</ul>
-<p>Use the text descriptions, statistical results, and your understanding of visualization best practices to recreate these figures. Your figures should be professional, colorblind-friendly, and tell the story clearly.</p>
-<p><strong>Implementation requirement:</strong> All three figures must be generated with <strong>beautifully formatted, object-oriented matplotlib code</strong> — i.e., create explicit <code>Figure</code> and <code>Axes</code> objects via <code>fig, ax = plt.subplots(...)</code> and call methods on <code>ax</code> (e.g., <code>ax.scatter</code>, <code>ax.axhline</code>, <code>ax.set_xlabel</code>, <code>ax.legend</code>). Do <strong>not</strong> use the stateful <code>plt.scatter</code> / <code>plt.title</code> / <code>plt.xlabel</code> pyplot API. Code should be clean, well-organized, and readable (logical grouping, consistent spacing, and meaningful variable names, for example, use <code>dreamy_color = '#4E79A7'</code> once at the top and reuse it, rather than pasting the hex code into every plotting call).</p>
-<p><strong>Grading:</strong> Completing the three figures correctly will earn you 85% of the grade. To earn the final 15% (for a total of 100%), you must make it feel like a complete, professional report rather than a challenge assignment</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>⚠️ AI Partnership Required
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Use Cursor AI for speed, but ensure you understand and can explain your visualizations in your own words. The goal is to create figures that match the narrative and statistical insights described in the text.</p>
-</div>
-</div>
 <section id="the-paradox-who-really-is-the-better-surgeon" class="level2">
 <h2 class="anchored" data-anchor-id="the-paradox-who-really-is-the-better-surgeon">The Paradox: Who <em>Really</em> Is the Better Surgeon?</h2>
 <div class="callout callout-style-default callout-tip no-icon callout-titled" title="A Tale of Two Surgeons">
@@ -534,66 +497,6 @@ Figure&nbsp;4: DAG Model Explaining Surgical Outcomes
 <li>Professional styling consistent with Figure 1</li>
 </ul>
 <div id="cell-fig-plot-outcomes-randomized" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>patients_randomized_df <span class="op">=</span> pd.read_csv(<span class="st">"patients_data_randomized.csv"</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>dreamy_color <span class="op">=</span> <span class="st">"#4E79A7"</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>duck_color <span class="op">=</span> <span class="st">"#E15759"</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>dreamy <span class="op">=</span> patients_randomized_df[<span class="st">"doctor_name"</span>] <span class="op">==</span> <span class="st">"Doc Dreamy"</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>duck <span class="op">=</span> patients_randomized_df[<span class="st">"doctor_name"</span>] <span class="op">==</span> <span class="st">"Doc Duck"</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>mean_dreamy <span class="op">=</span> patients_randomized_df.loc[dreamy, <span class="st">"post_surgical_score"</span>].mean()</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>mean_duck <span class="op">=</span> patients_randomized_df.loc[duck, <span class="st">"post_surgical_score"</span>].mean()</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>), layout<span class="op">=</span><span class="st">"constrained"</span>)</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>ax.scatter(</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    patients_randomized_df.loc[dreamy, <span class="st">"patient"</span>],</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    patients_randomized_df.loc[dreamy, <span class="st">"post_surgical_score"</span>],</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    marker<span class="op">=</span><span class="st">"o"</span>,</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    s<span class="op">=</span><span class="dv">55</span>,</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    facecolors<span class="op">=</span>dreamy_color,</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    edgecolors<span class="op">=</span><span class="st">"white"</span>,</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    linewidths<span class="op">=</span><span class="fl">0.6</span>,</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Doc Dreamy"</span>,</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    zorder<span class="op">=</span><span class="dv">3</span>,</span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>ax.scatter(</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    patients_randomized_df.loc[duck, <span class="st">"patient"</span>],</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    patients_randomized_df.loc[duck, <span class="st">"post_surgical_score"</span>],</span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    marker<span class="op">=</span><span class="st">"^"</span>,</span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    s<span class="op">=</span><span class="dv">65</span>,</span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    facecolors<span class="op">=</span>duck_color,</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    edgecolors<span class="op">=</span><span class="st">"white"</span>,</span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    linewidths<span class="op">=</span><span class="fl">0.6</span>,</span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Doc Duck"</span>,</span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    zorder<span class="op">=</span><span class="dv">3</span>,</span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>ax.axhline(mean_dreamy, color<span class="op">=</span>dreamy_color, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="fl">1.5</span>, alpha<span class="op">=</span><span class="fl">0.9</span>, zorder<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>ax.axhline(mean_duck, color<span class="op">=</span>duck_color, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="fl">1.5</span>, alpha<span class="op">=</span><span class="fl">0.9</span>, zorder<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>ax.text(</span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>    <span class="fl">0.99</span>,</span>
-<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>    <span class="fl">0.97</span>,</span>
-<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"Mean ○ Doc Dreamy: </span><span class="sc">{</span>mean_dreamy<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">Mean △ Doc Duck: </span><span class="sc">{</span>mean_duck<span class="sc">:.2f}</span><span class="ss">"</span>,</span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>    transform<span class="op">=</span>ax.transAxes,</span>
-<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>    ha<span class="op">=</span><span class="st">"right"</span>,</span>
-<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>    va<span class="op">=</span><span class="st">"top"</span>,</span>
-<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>    fontsize<span class="op">=</span><span class="dv">10</span>,</span>
-<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>    bbox<span class="op">=</span><span class="bu">dict</span>(boxstyle<span class="op">=</span><span class="st">"round,pad=0.35"</span>, facecolor<span class="op">=</span><span class="st">"white"</span>, edgecolor<span class="op">=</span><span class="st">"0.75"</span>, alpha<span class="op">=</span><span class="fl">0.95</span>),</span>
-<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Patient Number"</span>, fontsize<span class="op">=</span><span class="dv">11</span>)</span>
-<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Post-Surgical Symptom Score (Lower is Better)"</span>, fontsize<span class="op">=</span><span class="dv">11</span>)</span>
-<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Post-Surgical Symptom Score (Randomized Assignment)"</span>, fontsize<span class="op">=</span><span class="dv">12</span>, pad<span class="op">=</span><span class="dv">10</span>)</span>
-<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">":"</span>, linewidth<span class="op">=</span><span class="fl">0.8</span>, alpha<span class="op">=</span><span class="fl">0.65</span>)</span>
-<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>ax.legend(frameon<span class="op">=</span><span class="va">True</span>, loc<span class="op">=</span><span class="st">"lower right"</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
-<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>ax.tick_params(axis<span class="op">=</span><span class="st">"both"</span>, labelsize<span class="op">=</span><span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div id="fig-plot-outcomes-randomized" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -625,25 +528,19 @@ Figure&nbsp;5: Post-Surgical Symptom Score (lower is better) for randomized pati
 <li>Title: “Post-Surgical Symptom Score by Patient Severity”</li>
 <li>This figure should reveal the confounding by showing how severity affects both surgeon assignment and outcomes</li>
 </ul>
-<div id="fig-plot-outcomes-severity" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="7">
+<div id="cell-fig-plot-outcomes-severity" class="cell" data-execution_count="7">
+<div class="cell-output cell-output-display">
+<div id="fig-plot-outcomes-severity" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-plot-outcomes-severity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Recover Figure 3 - Outcomes by patient severity (stratification)</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Load observational data (already loaded above)</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Create scatter plot with:</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   - X-axis: Initial Patient Severity</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   - Y-axis: Post-Surgical Symptom Score</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   - Same color/marker scheme as previous figures</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   - Mean lines and annotations</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   - Shaded region from -1 to 1 on x-axis (use ax.axvspan or similar)</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   - Professional styling</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Hint: Use axvspan(-1, 1, alpha=0.15, color='gray', zorder=0) for the overlay</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<img src="index_files/figure-html/fig-plot-outcomes-severity-output-1.png" width="875" height="491" class="figure-img">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-plot-outcomes-severity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-outcomes-severity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Post-Surgical Symptom Score (lower is better) by Patient and Severity
 </figcaption>
 </figure>
+</div>
+</div>
 </div>
 <p>Looking at <a href="#fig-plot-outcomes-severity" class="quarto-xref">Figure&nbsp;6</a>, the value of stratifying by severity is visually most obvious with initial patient severity scores between -1 and 1 (highlighted in the overlay). We chose this region because it shows substantial overlap between the two surgeons—both surgeons have considerable data within this range, making it an ideal region for comparing their performance. Outside of this range, there is less data available for making direct comparisons: Doc Duck sees more of the higher-severity patients (severity &gt; 1), while Doc Dreamy sees more of the lower-severity patients (severity &lt; -1).</p>
 <p>Within the highlighted region, Doc Dreamy’s blue circles tend to be higher (worse) than Doc Duck’s red triangles for these patients. It is also obvious that Doc Duck is seeing the more severe patients overall, as his red triangles are generally to the right of Doc Dreamy’s blue circles on the x-axis. This is exactly what we would expect if patient severity were a common cause of surgeon choice and surgical outcomes. Despite the aggregate statistics pointing to Doc Dreamy having lower (better) post-surgical symptom scores on average, our visual analysis of this overlapping region leads us to conclude that Doc Duck is actually the better surgeon—a conclusion that would be obscured if we only looked at the means without stratifying by severity.</p>
